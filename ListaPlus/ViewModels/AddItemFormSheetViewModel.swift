@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import SwiftData
 
-class AddItemFormSheetViewModel {
+class AddItemFormSheetViewModel: ObservableObject {
 	@Published var addItemName = ""
 	@Published var addItemQuantity = ""
 	@Published var addItemValue = ""
@@ -43,5 +44,13 @@ class AddItemFormSheetViewModel {
 		addItemValue = ""
 		addItemCategory = ListItemModel.CategoryType.others
 		addItemQuantityType = ListItemModel.QuantityType.unity
+	}
+	
+	func fillEditingFields(editingItem: ListItemModel) {
+		addItemName = editingItem.name
+		addItemValue = editingItem.value != nil ? String(editingItem.value ?? 0) : ""
+		addItemCategory = ListItemModel.CategoryType(rawValue: editingItem.category) ?? ListItemModel.CategoryType.others
+		addItemQuantity = String(editingItem.quantity)
+		addItemQuantityType = ListItemModel.QuantityType(rawValue: editingItem.quantityType) ?? ListItemModel.QuantityType.unity
 	}
 }

@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ListaPlusApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+	var body: some Scene {
+		WindowGroup {
+			NavigationStack {
+				ContentView()
+			}
+			.modelContainer(for: [ListModel.self, ListItemModel.self])
+		}
+	}
 }

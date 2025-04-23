@@ -8,11 +8,30 @@
 import SwiftUI
 
 struct CheckboxComponent: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+	var isChecked: Bool
+			
+	var body: some View {
+		ZStack {
+			if isChecked {
+				Color(.green)
+				
+				Image(systemName: "checkmark")
+					.resizable()
+					.scaledToFit()
+					.fontWeight(.bold)
+					.foregroundStyle(.white)
+					.frame(width: 12, height: 12)
+			}
+		}
+		.frame(width: 25, height: 25)
+		.clipShape(.circle)
+		.overlay {
+			Circle()
+				.strokeBorder(.gray, lineWidth: 2)
+		}
+	}
 }
 
 #Preview {
-    CheckboxComponent()
+	CheckboxComponent(isChecked: true)
 }
