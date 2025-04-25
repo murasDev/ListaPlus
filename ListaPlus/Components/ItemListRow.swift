@@ -15,7 +15,10 @@ struct ItemListRow: View {
 			HStack {
 				VStack(alignment: .leading) {
 					Text(item.name)
+					
 					Text(String(format: "%.2f", item.quantity) + " \(item.quantityType)")
+					
+					
 				}
 				
 				Spacer()

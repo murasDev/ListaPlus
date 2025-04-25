@@ -21,6 +21,15 @@ struct ItemsListView: View {
 		Dictionary(grouping: items, by: \.category)
 	}
 	
+	var searchGroupedItem: [String: [ListItemModel]] {
+		if viewModel.searchText.isEmpty {
+			return groupedItemsByCategory
+		} else {
+			//should have searchText string in key of each groupedItem or in name of each value
+			return groupedItemsByCategory.filter { $0.key.localizedCaseInsensitiveContains(viewModel.searchText) }
+		}
+	}
+	
 	var progressViewPercentage: Double {
 		let totalItems = items.count
 		let checkedItems = items.filter({ $0.isChecked }).count
@@ -50,10 +59,12 @@ struct ItemsListView: View {
 			}
 		}
 		.navigationTitle(selectedList.name)
+		.searchable(text: $viewModel.searchText, prompt: "Digite o nome do item ou da categoria")
 		.toolbar {
 			ToolbarItem(placement: .topBarTrailing) {
 				Image(systemName: "plus")
 					.onTapGesture {
+						viewModel.editingItem = nil
 						viewModel.isPresented = true
 					}
 			}
@@ -67,12 +78,14 @@ struct ItemsListView: View {
 extension ItemsListView {
 	private var sectionedList: some View {
 		List {
-			ForEach(groupedItemsByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { key, items in
+			ForEach(searchGroupedItem.sorted(by: { $0.key < $1.key }), id: \.key) { key, items in
 				Section(header: Text(key)) {
 					ForEach(items) { item in
 						ItemListRow(item: item, toggleIsChecked: {
-							item.isChecked = !item.isChecked
+							viewModel.toggleIsChecked(item: item)
 						})
+						.transition(.move(edge: .leading))
+						.animation(.easeOut.delay(Double(index) * 0.05), value: searchGroupedItem)
 						.swipeActions {
 							DeleteActionButton {
 								viewModel.deleteItem(item: item, context: modelContext)

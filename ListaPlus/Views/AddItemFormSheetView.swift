@@ -11,6 +11,7 @@ struct AddItemFormSheetView: View {
 	@StateObject var viewModel = AddItemFormSheetViewModel()
 	@Environment(\.modelContext) var modelContext
 	@Environment(\.dismiss) var dismiss
+	
 	var editingItem: ListItemModel?
 	var selectedList: ListModel
 	
@@ -62,14 +63,11 @@ extension AddItemFormSheetView {
 		Group {
 			ToolbarItem(placement: .confirmationAction) {
 				Button {
-					viewModel.addItemToList(to: selectedList, context: modelContext)
-					
-					viewModel.clearFields()
-					
-					dismiss()
+					onTapConfirmationAction()
 				} label: {
 					Text(saveButtonTitle)
 				}
+				.disabled(viewModel.isConfirmationButtonDisabled)
 			}
 			
 			ToolbarItem(placement: .cancellationAction) {
@@ -80,6 +78,21 @@ extension AddItemFormSheetView {
 				}
 			}
 		}
+	}
+	
+	private func onTapConfirmationAction() {
+		defer {
+			viewModel.clearFields()
+			
+			dismiss()
+		}
+		
+		guard let editingItemGuarded = editingItem else {
+			viewModel.addItemToList(to: selectedList, context: modelContext)
+			return
+		}
+		
+		viewModel.saveEditingItem(editingItem: editingItemGuarded)
 	}
 }
 

@@ -15,6 +15,10 @@ class AddItemFormSheetViewModel: ObservableObject {
 	@Published var addItemCategory: ListItemModel.CategoryType = ListItemModel.CategoryType.others
 	@Published var addItemQuantityType: ListItemModel.QuantityType = ListItemModel.QuantityType.unity
 	
+	var isConfirmationButtonDisabled: Bool {
+		addItemName.isEmpty || addItemQuantity.isEmpty
+	}
+	
 	func addItemToList(to parentList: ListModel, context: ModelContext) {
 		let quantityType = addItemQuantityType
 		let category = addItemCategory
@@ -52,5 +56,13 @@ class AddItemFormSheetViewModel: ObservableObject {
 		addItemCategory = ListItemModel.CategoryType(rawValue: editingItem.category) ?? ListItemModel.CategoryType.others
 		addItemQuantity = String(editingItem.quantity)
 		addItemQuantityType = ListItemModel.QuantityType(rawValue: editingItem.quantityType) ?? ListItemModel.QuantityType.unity
+	}
+	
+	func saveEditingItem(editingItem: ListItemModel) {
+		editingItem.name = addItemName
+		editingItem.value = Double(addItemValue)
+		editingItem.quantityType = addItemQuantityType.rawValue
+		editingItem.category = addItemCategory.rawValue
+		editingItem.quantity = Double(addItemQuantity) ?? 0.00
 	}
 }
